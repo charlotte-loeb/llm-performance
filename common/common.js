@@ -12,7 +12,7 @@ function getBase(l) {
 }
 
 function getHeader(b, p) {
-	return "<h1>Online Appendix - LLM Performance and Task Complexiy [Blinded for Review]</h1>";
+	return "<h1>Online Appendix - LLM Performance and Task Complexity [Blinded for Review]</h1>";
 }
 				
 function getFooter(b, p) {
