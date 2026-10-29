@@ -24,48 +24,8 @@
 				<div class="col-sm-10">
 					<h3>Supplementary Information</h3>
 					<p>
-						The following section contains the Supplementary Information (SI Appendix) of the manuscript: the supporting text, Figures S1 to S4 and Tables S1 to S14. All figures and tables are produced by the master script documented in the section <a href="../reproduction-materials" data-role="internal">Reproduction Materials</a>.
+						The following section contains the Supplementary Information of the manuscript: Figures S1 to S4 and Tables S1 to S14. All figures and tables are produced by the master script documented in the section <a href="../reproduction-materials" data-role="internal">Reproduction Materials</a>.
 					</p>
-
-					<h3>Supporting Text</h3>
-					<h4>S1. Expert survey</h4>
-					<p>
-						<b>Sampling frame</b>. We invited 56 experts in manual content analysis: authors listed in the Database of Variables for Content Analysis (DOCA; sections News/Journalism, Fiction/Entertainment, and Research on User-Generated Media Content) and further experts known to the authors who have published content analysis studies.
-					</p>
-					<p>
-						<b>Data collection.</b> The online survey (LimeSurvey) was in the field from 16 April to 7 May 2026. Experts were contacted by e-mail (n = 51) or LinkedIn (n = 5) and received two reminders. Each expert rated the prompts for the 17 variables, covering four levels of analysis (text, actor, justification, actor reference), on four 5-point scales: the scope of knowledge beyond the article and the coding materials that is required (need for information), the extent of subjective interpretation that is required (need for interpretation), and the clarity and completeness of the prompt. Each prompt was preceded by a note on the material available to coders. The survey closed with questions on the experts' self-rated expertise, their experience with manual content analysis, gender, and age.
-					</p>
-					<p>
-						<b>Response.</b> Seventeen experts completed the survey and there were no partial interviews; 13 experts refused or broke off without providing data, and 26 did not respond. The response rate, (I + P)/((I + P) + (R + NC + O)), is 30.4%. All 17 experts rated all 17 variables on all four dimensions. Agreement among the experts is reported in Table S1.
-					</p>
-					<h4>S2. Coding instructions and prompts</h4>
-					<p>
-						<b>Human annotation</b>. Human coding followed the MedCon codebook (v7.7), see section <a href="../../human-annotation/codebook" data-role="internal">Codebook</a>.
-					</p>
-					<p>
-						<b>LLM annotation.</b> The LLMs coded the 17 variables with one zero-shot prompt per level of analysis (text, actor, justification, actor reference). All four prompts share the same structure. They introduce the model as a social science researcher coding news articles for the project [BLINDED FOR REVIEW] on the public role of religion in social life, state that the coding follows strict instructions from the [BLINDED FOR REVIEW] codebook (v7.7), and ask for open codes in English. They then give the definition of the coding unit, followed by the codebook instructions for each variable of that level, with the answer categories and their numeric codes. Each prompt ends with the full article text. One request was sent per coding unit. The coding units (actors, justifications, actor references) and the positions are not identified by the models; they are inserted into the prompt from the human gold standard, so that the models classify the same units as the human coders. The prompts are provided in the repository (folder icr_list1).
-					</p>
-					<p>
-						Text level. The article prompt covers four variables: the section in which the article appeared (six categories), its form of presentation (journalistic genre, nine categories), the overall tone as the intensity of political outrage (five-point scale from conventional political speech to very intense outrage), and whether opposing positions appear in the article (true/false). For the last variable, a position from the article is given together with a definition of a position; the variable is coded true only if both a pro and a contra position on it are clearly identifiable.
-					</p>
-					<p>
-						Actor level. The actor prompt names one actor of the article and defines an actor as an acting subject, individual or collective, who can at least potentially participate in a discourse. It covers five variables: the actor's general role or institutional affiliation (18 categories, e.g. political actors, journalists, representatives of religious communities, ordinary citizens), party affiliation (for political actors only, open code), origin (ISO two-letter country code or name of the international organization), gender (female, male, other), and religious affiliation (hierarchical scheme with Christian and Islamic denominations as well as Jewish, Buddhist, Hindu, other, and no religious affiliation).
-					</p>
-					<p>
-						Justification level. The justification prompt gives a position, a justification for it, and the actor providing the justification, and defines a justification as an explicit argument why something should or should not be done. It covers four true/false variables: whether the justification explicitly addresses costs or benefits for the actor's own group (in-group reference), for a group the actor does not belong to (out-group reference), or for all social groups or society in general (common good), and whether it contains a positive religious marker (e.g. references to God, Allah, the Bible, or the Quran).
-					</p>
-					<p>
-						Actor reference level. The actor reference prompt gives a referring actor, a referred actor, and the text of the reference, and defines an actor reference as a mention of or allusion to another actor, such as a quotation, characterization, or evaluation. It covers four variables: whether the reference is established by the referring actor (genuine responsiveness) or only by the author of the article (constructed responsiveness), the valence of an explicit evaluation of the referred actor (positive, negative, no evaluation), and whether the reference expresses recognition (true/false) or political outrage (true/false, defined by rhetorical means such as insulting language, name calling, or mockery).
-					</p>
-					<h4>S3. LLM coding and reliability computation</h4>
-					<p>
-						Models and API settings, the majority vote and the reliability computation are documented in the section <a href="../documentation" data-role="internal">Documentation</a>.
-					</p>
-					<h4>S4. Code and data</h4>
-					<p>
-						The analysis code and data are provided in the section <a href="../reproduction-materials" data-role="internal">Reproduction Materials</a>.
-					</p>
-
 					<h3>Figures</h3>
 					<h4>Fig. S1</h4>
 					<a href="FigS1.png" data-featherlight="image"><img src="FigS1.png" alt="Fig. S1" class="img-responsive" style="max-width: 900px;"/></a>
