@@ -54,50 +54,141 @@
 							<td>16 April &ndash; 7 May 2026</td>
 						</tr>
 						<tr>
+							<td><b>Incentive</b></td>
+							<td>Prize draw of 15 gift cards worth &euro;10 each; e-mail addresses for the draw were stored separately from the survey data and deleted afterwards</td>
+						</tr>
+						<tr>
 							<td><b>Rated material</b></td>
 							<td>The prompts for the 17 variables on four levels (text, actor, justification, actor reference). Each prompt was preceded by a note on the material available to coders (e.g. full article text, validated list of actors).</td>
 						</tr>
 					</tbody>
 					</table>
+
+					<h4>Questionnaire</h4>
 					<p>
-						Each expert rated each of the 17 prompts on four dimensions (1&ndash;5):
+						The questionnaire was in English. Its introduction asked the experts to assess three aspects of each coding task: the required external or background knowledge, the scope for interpretation, and the operationality of the coding instructions (clarity of the instructions and completeness of the decision rules). Experts were asked to base their ratings on a competent trained coder who has access only to the media text and the coding instructions shown in the survey. The survey took about 20&ndash;30 minutes.
+					</p>
+					<p>
+						Each of the 17 variables was presented on its own page with the variable name, the coding instruction and the codes, reproduced from an existing codebook. A note to experts described the material available to coders:
 					</p>
 					<table class="table table-condensed table-striped" style="width: auto;">
 					<thead>
 						<tr>
-							<th class="text-left">Dimension (questionnaire)</th>
+							<th class="text-left">Level</th>
+							<th class="text-left">Variables</th>
+							<th class="text-left">Material available to coders</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Text</td>
+							<td>Section, Form of presentation, Tone (outrage intensity), Opposing positions</td>
+							<td>Full article text; for Section and Tone also the metadata (URL, publication date, title, subtitle, author and, where available, the section label of the outlet); for Opposing positions also a validated list of the positions identified in the article</td>
+						</tr>
+						<tr>
+							<td>Actor</td>
+							<td>Actor role, Actor party, Actor origin, Actor gender, Actor religion</td>
+							<td>Article text and a validated list of the actors identified in the article; coded separately for each actor. For Actor party, coders also have a list of all parties in the political system (not shown in the survey)</td>
+						</tr>
+						<tr>
+							<td>Justification</td>
+							<td>Justification in-group, out-group, common good, religious beliefs</td>
+							<td>Article text and a validated list of the justifications identified in the article; coded separately for each justification</td>
+						</tr>
+						<tr>
+							<td>Actor reference</td>
+							<td>Actor reference responsiveness (genuine/constructed), valence, recognition, outrage</td>
+							<td>Article text and a validated list of the actor-to-actor references identified in the article; coded separately for each reference</td>
+						</tr>
+					</tbody>
+					</table>
+					<p>
+						After each variable, experts answered four questions on five-point scales:
+					</p>
+					<table class="table table-condensed table-striped" style="width: auto;">
+					<thead>
+						<tr>
+							<th class="text-left">Question</th>
 							<th class="text-left">Construct in the manuscript</th>
 							<th class="text-left">Column suffix</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
-							<td>Scope of knowledge beyond the article and coding materials</td>
+							<td>How much knowledge beyond the article and the information provided in the coding materials is typically required for a competent trained coder to code this variable correctly?</td>
 							<td>Need for information</td>
 							<td><code>know</code></td>
 						</tr>
 						<tr>
-							<td>Extent of subjective interpretation</td>
+							<td>To what extent does coding this variable require interpretive judgement?</td>
 							<td>Need for interpretation</td>
 							<td><code>interpret</code></td>
 						</tr>
 						<tr>
-							<td>Clarity of the prompt</td>
+							<td>How clearly are the coding instructions formulated?</td>
 							<td>Clarity</td>
 							<td><code>clear</code></td>
 						</tr>
 						<tr>
-							<td>Completeness of the prompt</td>
+							<td>How complete are the decision rules provided in the coding instructions?</td>
 							<td>Completeness</td>
 							<td><code>complete</code></td>
 						</tr>
 					</tbody>
 					</table>
 					<p>
-						Columns are named <code>&lt;item&gt;&lt;dimension&gt;</code>, e.g. <code>toneknow</code>.
+						Columns are named <code>&lt;item&gt;&lt;dimension&gt;</code>, e.g. <code>toneknow</code>. Answer categories:
 					</p>
+					<table class="table table-condensed table-striped" style="width: auto;">
+					<thead>
+						<tr>
+							<th class="text-center">Value</th>
+							<th class="text-left">Need for information</th>
+							<th class="text-left">Need for interpretation</th>
+							<th class="text-left">Clarity</th>
+							<th class="text-left">Completeness</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="text-center">1</td>
+							<td>None or almost none &ndash; the text alone is sufficient; no external knowledge is required</td>
+							<td>Very low &ndash; no or almost no judgement required, largely mechanical rule application; little room for disagreement</td>
+							<td>Very unclear</td>
+							<td>Very weakly specified (does not support highly consistent application)</td>
+						</tr>
+						<tr>
+							<td class="text-center">2</td>
+							<td>Minimal general knowledge &ndash; only everyday/common knowledge (e.g. general societal or political awareness) is required</td>
+							<td>Low &ndash; minor judgement required in a few cases; disagreement is unlikely</td>
+							<td>Somewhat unclear</td>
+							<td>Weakly specified</td>
+						</tr>
+						<tr>
+							<td class="text-center">3</td>
+							<td>Moderate contextual knowledge &ndash; some substantive or contextual knowledge is required</td>
+							<td>Moderate &ndash; judgement is needed in a noticeable number of cases; some disagreement is possible</td>
+							<td>Moderately clear</td>
+							<td>Moderately specified</td>
+						</tr>
+						<tr>
+							<td class="text-center">4</td>
+							<td>Substantial background knowledge &ndash; considerable external knowledge is required</td>
+							<td>High &ndash; substantial interpretation is frequently required; disagreement is likely</td>
+							<td>Fairly clear</td>
+							<td>Well specified</td>
+						</tr>
+						<tr>
+							<td class="text-center">5</td>
+							<td>Specialized background knowledge &ndash; specific domain/country/issue knowledge is required</td>
+							<td>Very high &ndash; substantial interpretation is required in most cases; reasonable disagreement is very likely even after careful reading of the text to be coded</td>
+							<td>Very clear</td>
+							<td>Very well specified (does support highly consistent application)</td>
+						</tr>
+					</tbody>
+					</table>
 					<p>
-						Additional items:
+						Additional items at the end of the questionnaire:
 					</p>
 					<table class="table table-condensed table-striped" style="width: auto;">
 					<thead>
@@ -109,29 +200,29 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td>Subjective level of own expertise</td>
+							<td>How would you rate your own level of expertise in conducting manual content analysis?</td>
 							<td><code>subjexpert</code></td>
-							<td>1 very low &ndash; 5 very high</td>
+							<td>1 very low, 2 low, 3 moderate, 4 high, 5 very high</td>
 						</tr>
 						<tr>
-							<td>Number of manual content analysis studies participated in</td>
+							<td>How many distinct manual content analysis studies have you participated in to date? (Participation includes planning/designing the study, codebook development, training or supervising coders, coding, or data analysis.)</td>
 							<td><code>castudies</code></td>
-							<td>0 none, 1 one study, 2 two to five, 3 six to ten, 4 more than ten</td>
+							<td>0 none, 1 one study, 2 2&ndash;5 studies, 3 6&ndash;10 studies, 4 more than 10 studies</td>
 						</tr>
 						<tr>
-							<td>Last manual content analysis participated in</td>
+							<td>When were you last actively involved in a manual content analysis study?</td>
 							<td><code>lastcastudy</code></td>
-							<td>1 currently involved &ndash; 5 five years ago or more, 6 never involved</td>
+							<td>1 currently involved, 2 less than 12 months ago, 3 1 to less than 3 years ago, 4 3 to less than 5 years ago, 5 5 years ago or more, 6 never involved</td>
 						</tr>
 						<tr>
-							<td>Gender</td>
+							<td>What is your gender?</td>
 							<td>removed from the public version</td>
-							<td>1 male, 2 female, 3 non-binary, 4 prefer not to say; open answer</td>
+							<td>1 male, 2 female, 3 non-binary, 4 prefer not to say; other (open answer)</td>
 						</tr>
 						<tr>
 							<td>Age</td>
 							<td>removed from the public version</td>
-							<td>Open answer</td>
+							<td>Open answer (&ldquo;I am &hellip; years old.&rdquo;)</td>
 						</tr>
 					</tbody>
 					</table>
