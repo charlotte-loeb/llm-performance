@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Blanked project | Documentation - LLM Annotation - Expert Survey</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<link rel="stylesheet" type="text/css" href="../../common/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="../../common/style.css"/>
+    </head>
+    <body>
+		<div id="header"></div>
+	
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-sm-2">
+					<div id="subNavbar"></div>
+				</div>
+				<div class="col-sm-10">
+					<h3>Expert Survey</h3>
+					<p>
+						The following section presents information on the expert survey conducted to assess the complexity of the text annotation.
+					
+					</p>
+					<h4>Sampling frame</h4>
+					<p>
+						56 experts in manual content analysis:
+					</p>
+					<ul>
+						<li>Authors listed in the <a href="https://www.hope.uzh.ch/doca/index" target="_blank">Database of Variables for Content Analysis (DOCA)</a>, sections
+							<ul>
+								<li>News/Journalism</li>
+								<li>Fiction/Entertainment</li>
+								<li>User-Generated Media Content</li>
+							</ul>
+						</li>
+						<li>Experts known to the authors who have published content analysis studies</li>
+					</ul>
+
+					<h4>Data collection</h4>
+					<table class="table table-condensed table-striped" style="width: auto;">
+					<tbody>
+						<tr>
+							<td><b>Mode</b></td>
+							<td>Online survey (LimeSurvey)</td>
+						</tr>
+						<tr>
+							<td><b>Contact</b></td>
+							<td>E-mail (51 experts) and LinkedIn (5 experts), two reminders</td>
+						</tr>
+						<tr>
+							<td><b>Field period</b></td>
+							<td>16 April &ndash; 7 May 2026</td>
+						</tr>
+						<tr>
+							<td><b>Incentive</b></td>
+							<td>Prize draw of 15 gift cards worth &euro;10 each; e-mail addresses for the draw were stored separately from the survey data and deleted afterwards</td>
+						</tr>
+						<tr>
+							<td><b>Rated material</b></td>
+							<td>The prompts for the 17 variables on four levels (text, actor, justification, actor reference). Each prompt was preceded by a note on the material available to coders (e.g. full article text, validated list of actors).</td>
+						</tr>
+					</tbody>
+					</table>
+
+					<h4>Questionnaire</h4>
+					<p>
+						The questionnaire was in English. Its introduction asked the experts to assess three aspects of each coding task: the required external or background knowledge, the scope for interpretation, and the operationality of the coding instructions (clarity of the instructions and completeness of the decision rules). Experts were asked to base their ratings on a competent trained coder who has access only to the media text and the coding instructions shown in the survey. The survey took about 20&ndash;30 minutes.
+					</p>
+					<p>
+						Each of the 17 variables was presented on its own page with the variable name, the coding instruction and the codes, reproduced from an existing codebook. A note to experts described the material available to coders:
+					</p>
+					<table class="table table-condensed table-striped" style="width: auto;">
+					<thead>
+						<tr>
+							<th class="text-left">Level</th>
+							<th class="text-left">Variables</th>
+							<th class="text-left">Material available to coders</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Text</td>
+							<td>Section, Form of presentation, Tone (outrage intensity), Opposing positions</td>
+							<td>Full article text; for Section and Tone also the metadata (URL, publication date, title, subtitle, author and, where available, the section label of the outlet); for Opposing positions also a validated list of the positions identified in the article</td>
+						</tr>
+						<tr>
+							<td>Actor</td>
+							<td>Actor role, Actor party, Actor origin, Actor gender, Actor religion</td>
+							<td>Article text and a validated list of the actors identified in the article; coded separately for each actor. For Actor party, coders also have a list of all parties in the political system (not shown in the survey)</td>
+						</tr>
+						<tr>
+							<td>Justification</td>
+							<td>Justification in-group, out-group, common good, religious beliefs</td>
+							<td>Article text and a validated list of the justifications identified in the article; coded separately for each justification</td>
+						</tr>
+						<tr>
+							<td>Actor reference</td>
+							<td>Actor reference responsiveness (genuine/constructed), valence, recognition, outrage</td>
+							<td>Article text and a validated list of the actor-to-actor references identified in the article; coded separately for each reference</td>
+						</tr>
+					</tbody>
+					</table>
+					<p>
+						After each variable, experts answered four questions on five-point scales:
+					</p>
+					<table class="table table-condensed table-striped" style="width: auto;">
+					<thead>
+						<tr>
+							<th class="text-left">Question</th>
+							<th class="text-left">Construct in the manuscript</th>
+							<th class="text-left">Column suffix</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>How much knowledge beyond the article and the information provided in the coding materials is typically required for a competent trained coder to code this variable correctly?</td>
+							<td>Need for information</td>
+							<td><code>know</code></td>
+						</tr>
+						<tr>
+							<td>To what extent does coding this variable require interpretive judgement?</td>
+							<td>Need for interpretation</td>
+							<td><code>interpret</code></td>
+						</tr>
+						<tr>
+							<td>How clearly are the coding instructions formulated?</td>
+							<td>Clarity</td>
+							<td><code>clear</code></td>
+						</tr>
+						<tr>
+							<td>How complete are the decision rules provided in the coding instructions?</td>
+							<td>Completeness</td>
+							<td><code>complete</code></td>
+						</tr>
+					</tbody>
+					</table>
+					<p>
+						Columns are named <code>&lt;item&gt;&lt;dimension&gt;</code>, e.g. <code>toneknow</code>. Answer categories:
+					</p>
+					<table class="table table-condensed table-striped" style="width: auto;">
+					<thead>
+						<tr>
+							<th class="text-center">Value</th>
+							<th class="text-left">Need for information</th>
+							<th class="text-left">Need for interpretation</th>
+							<th class="text-left">Clarity</th>
+							<th class="text-left">Completeness</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="text-center">1</td>
+							<td>None or almost none &ndash; the text alone is sufficient; no external knowledge is required</td>
+							<td>Very low &ndash; no or almost no judgement required, largely mechanical rule application; little room for disagreement</td>
+							<td>Very unclear</td>
+							<td>Very weakly specified (does not support highly consistent application)</td>
+						</tr>
+						<tr>
+							<td class="text-center">2</td>
+							<td>Minimal general knowledge &ndash; only everyday/common knowledge (e.g. general societal or political awareness) is required</td>
+							<td>Low &ndash; minor judgement required in a few cases; disagreement is unlikely</td>
+							<td>Somewhat unclear</td>
+							<td>Weakly specified</td>
+						</tr>
+						<tr>
+							<td class="text-center">3</td>
+							<td>Moderate contextual knowledge &ndash; some substantive or contextual knowledge is required</td>
+							<td>Moderate &ndash; judgement is needed in a noticeable number of cases; some disagreement is possible</td>
+							<td>Moderately clear</td>
+							<td>Moderately specified</td>
+						</tr>
+						<tr>
+							<td class="text-center">4</td>
+							<td>Substantial background knowledge &ndash; considerable external knowledge is required</td>
+							<td>High &ndash; substantial interpretation is frequently required; disagreement is likely</td>
+							<td>Fairly clear</td>
+							<td>Well specified</td>
+						</tr>
+						<tr>
+							<td class="text-center">5</td>
+							<td>Specialized background knowledge &ndash; specific domain/country/issue knowledge is required</td>
+							<td>Very high &ndash; substantial interpretation is required in most cases; reasonable disagreement is very likely even after careful reading of the text to be coded</td>
+							<td>Very clear</td>
+							<td>Very well specified (does support highly consistent application)</td>
+						</tr>
+					</tbody>
+					</table>
+					<p>
+						Additional items at the end of the questionnaire:
+					</p>
+					<table class="table table-condensed table-striped" style="width: auto;">
+					<thead>
+						<tr>
+							<th class="text-left">Item</th>
+							<th class="text-left">Column</th>
+							<th class="text-left">Categories</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>How would you rate your own level of expertise in conducting manual content analysis?</td>
+							<td><code>subjexpert</code></td>
+							<td>1 very low, 2 low, 3 moderate, 4 high, 5 very high</td>
+						</tr>
+						<tr>
+							<td>How many distinct manual content analysis studies have you participated in to date? (Participation includes planning/designing the study, codebook development, training or supervising coders, coding, or data analysis.)</td>
+							<td><code>castudies</code></td>
+							<td>0 none, 1 one study, 2 2&ndash;5 studies, 3 6&ndash;10 studies, 4 more than 10 studies</td>
+						</tr>
+						<tr>
+							<td>When were you last actively involved in a manual content analysis study?</td>
+							<td><code>lastcastudy</code></td>
+							<td>1 currently involved, 2 less than 12 months ago, 3 1 to less than 3 years ago, 4 3 to less than 5 years ago, 5 5 years ago or more, 6 never involved</td>
+						</tr>
+						<tr>
+							<td>What is your gender?</td>
+							<td>removed from the public version</td>
+							<td>1 male, 2 female, 3 non-binary, 4 prefer not to say; other (open answer)</td>
+						</tr>
+						<tr>
+							<td>Age</td>
+							<td>removed from the public version</td>
+							<td>Open answer (&ldquo;I am &hellip; years old.&rdquo;)</td>
+						</tr>
+					</tbody>
+					</table>
+
+					<h4>Response</h4>
+					<table class="table table-condensed table-striped" style="width: auto;">
+					<thead>
+						<tr>
+							<th class="text-left">Disposition</th>
+							<th class="text-center"><i>n</i></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Expert sampling frame</td>
+							<td class="text-center">56</td>
+						</tr>
+						<tr>
+							<td>Complete interviews (I)</td>
+							<td class="text-center">17</td>
+						</tr>
+						<tr>
+							<td>Partial interviews (P)</td>
+							<td class="text-center">0</td>
+						</tr>
+						<tr>
+							<td>Refusal or break-off, no data (R)</td>
+							<td class="text-center">13</td>
+						</tr>
+						<tr>
+							<td>Non-interview contact without explicit refusal (NC)</td>
+							<td class="text-center">26</td>
+						</tr>
+						<tr>
+							<td>Other: no partial or complete interview despite contact attempt (O)</td>
+							<td class="text-center">0</td>
+						</tr>
+						<tr>
+							<td><b>Response rate</b> (I + P) / ((I + P) + (R + NC + O))</td>
+							<td class="text-center"><b>30.4%</b></td>
+						</tr>
+					</tbody>
+					</table>
+					<p>
+						All 17 complete interviews rated all 17 variables on all four dimensions (no missing ratings).
+					</p>
+
+					<h4>Expert agreement</h4>
+					<p>
+						The table shows how closely the experts agreed in their ratings of the 17 prompts, separately for each rating dimension. Krippendorff's alpha (interval metric) and the intraclass correlation of a single expert's rating, ICC(2,1), describe the agreement between individual experts. The ICC(2,k) describes the reliability of the mean rating across all 17 experts, which is the value used in the analyses. Agreement between individual experts is low to moderate, but the mean ratings are reliable (ICC(2,k) = .73 to .95).
+					</p>
+					<table class="table table-condensed table-striped" style="width: auto;">
+					<thead>
+						<tr>
+							<th class="text-left">Dimension</th>
+							<th class="text-center">Krippendorff's &alpha;</th>
+							<th class="text-center">ICC(2,1)</th>
+							<th class="text-center">ICC(2,k)</th>
+							<th class="text-center">ICC(2,k) 95% CI</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Need for information</td>
+							<td class="text-center">.20</td>
+							<td class="text-center">.22</td>
+							<td class="text-center">.83</td>
+							<td class="text-center">[.69, .93]</td>
+						</tr>
+						<tr>
+							<td>Need for interpretation</td>
+							<td class="text-center">.49</td>
+							<td class="text-center">.51</td>
+							<td class="text-center">.95</td>
+							<td class="text-center">[.90, .98]</td>
+						</tr>
+						<tr>
+							<td>Clarity of the prompt</td>
+							<td class="text-center">.18</td>
+							<td class="text-center">.20</td>
+							<td class="text-center">.81</td>
+							<td class="text-center">[.66, .92]</td>
+						</tr>
+						<tr>
+							<td>Completeness of the prompt</td>
+							<td class="text-center">.10</td>
+							<td class="text-center">.14</td>
+							<td class="text-center">.73</td>
+							<td class="text-center">[.52, .88]</td>
+						</tr>
+					</tbody>
+					</table>
+					<p>
+						<i>Note</i>: <i>N</i> = 17 experts, 17 prompts, ratings on 1&ndash;5 scales. Intraclass correlations from a two-way random-effects model.
+					</p>
+				</div>
+			</div>
+		</div>
+
+		<div id="footer"></div>
+		
+		<script type="text/javascript">window.linkLevel = 3; window.sectionID = 'llm-expert-survey';</script>
+		<script type="text/javascript" src="../../common/common.js"></script>
+		<script type="text/javascript" src='../../subnav.js'></script>
+    </body>
+</html>
