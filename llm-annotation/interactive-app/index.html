@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Blanked project | Documentation - LLM Annotation - Interactive App</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<link rel="stylesheet" type="text/css" href="../../common/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="../../common/style.css"/>
+    </head>
+    <body>
+		<div id="header"></div>
+
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-sm-2">
+					<div id="subNavbar"></div>
+				</div>
+				<div class="col-sm-10">
+					<h3>Interactive App</h3>
+					<p>
+						The interactive app presents the results of the study for all models and both reliability measures. It shows the LLM&ndash;human reliability for each of the 17 coding tasks, the expert ratings of the coding tasks, and the regressions of LLM&ndash;human reliability on need for information and need for interpretation, with or without controls for the clarity and completeness of the instructions. The app uses the same data, labels, colours, reference lines and statistics as the figures in the manuscript and the SI Appendix.
+					</p>
+					<p>
+						The app runs entirely in the browser (Shinylive/webR); no installation is needed. Loading R and the packages takes about 10&ndash;30 seconds on the first visit.
+					</p>
+					<p>
+						<a href="app/index.html" target="_blank" class="btn btn-primary">Open the app in a new tab</a>
+					</p>
+					<div style="border: 1px solid #ccc; margin-bottom: 20px;">
+						<iframe src="app/index.html" title="Interactive app" style="width: 100%; height: 1000px; border: 0;" loading="lazy"></iframe>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="footer"></div>
+
+		<script type="text/javascript">window.linkLevel = 3; window.sectionID = 'interactive-app';</script>
+		<script type="text/javascript" src="../../common/common.js"></script>
+		<script type="text/javascript" src='../../subnav.js'></script>
+    </body>
+</html>
