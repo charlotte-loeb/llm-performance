@@ -5,13 +5,13 @@
         <title>Blanked project | Documentation - LLM Annotation - Documentation</title>
 
         <meta name="viewport" content="width=device-width, initial-scale=1">
-		
+
 		<link rel="stylesheet" type="text/css" href="../../common/bootstrap.min.css"/>
 		<link rel="stylesheet" type="text/css" href="../../common/style.css"/>
     </head>
     <body>
 		<div id="header"></div>
-	
+
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-sm-2">
@@ -20,15 +20,30 @@
 				<div class="col-sm-10">
 					<h3>LLM Coding and Reliability Input</h3>
 					<p>
-						The following section documents how <code>icr_list1.rds</code>, the main LLM-related input of the analysis, was produced: from the human gold standard via the prompts, the LLM API calls and the majority vote to the reliability coefficients. The analyses based on this file are documented in the section <a href="../reproduction-materials" data-role="internal">Reproduction Materials</a>.
+						This section documents how <code>icr_list_harmonized.rds</code>, the main LLM-related input of the analysis, was produced. The steps run from the human gold standard through the prompts, the LLM API calls, the harmonization of party codes and the majority vote to the reliability coefficients. The analyses based on this file are documented in the section <a href="../reproduction-materials" data-role="internal">Reproduction Materials</a>.
 					</p>
 <pre>human gold standard (coded units)  ─┐
                                     ├─&gt; prompts ─&gt; LLM API calls ─&gt; parsed LLM codes
 codebook (MedCon v7.7)             ─┘                                     │
                                                                           v
-            icr_list1.rds  &lt;─  reliability (tidycomm::test_icr)  &lt;─  majority vote</pre>
+                                                        party harmonization
+                                                                          │
+                                                                          v
+   icr_list_harmonized.rds  &lt;─  reliability (tidycomm::test_icr)  &lt;─  majority vote</pre>
 
-					<h4>Human codebook and gold standard</h4>
+					<h4>Data and coding units</h4>
+					<p>
+						Three LLMs (Gemini 3.1 Flash Lite, GPT-5 Nano and Qwen3 235B) coded texts using the [BLINDED FOR REVIEW] codebook on 17 coding tasks across four levels:
+					</p>
+					<ul>
+						<li><b>News article:</b> section, form of presentation, tone, opposing positions</li>
+						<li><b>Actors appearing in the article:</b> role, party affiliation, origin, gender, religious affiliation</li>
+						<li><b>Justifications for political positions:</b> in-group, out-group, common good, religious beliefs</li>
+						<li><b>Actors' references to other actors:</b> responsiveness, valence, recognition, outrage</li>
+					</ul>
+					<p>
+						Up to 100 units were sampled per country and coding level: 485 articles, 600 actors, 600 justifications and 557 actor references.
+					</p>
 					<table class="table table-condensed table-striped" style="width: auto;">
 					<tbody>
 						<tr>
@@ -41,7 +56,7 @@ codebook (MedCon v7.7)             ─┘                                     �
 						</tr>
 						<tr>
 							<td><b>Sample</b></td>
-							<td>Units sampled per coding level: up to 100 units per country (Australia, Switzerland, Germany, Lebanon, Turkey, USA), deterministic (<code>set.seed(123)</code>, <code>slice_sample(prop = 1)</code> on the pre-filtered frame, first 100 per country). The article level is additionally restricted to articles with a section (<code>SECTION != 6</code>, not missing), yielding 485 articles (eligible articles per country: AU 121, CH 75, DE 117, LB 237, TR 62, US 63). Selection stems from the [DATA SET BLINDED FOR REVIEW].</td>
+							<td>Units are sampled per coding level, up to 100 per country (Australia, Switzerland, Germany, Lebanon, Turkey, USA). The draw is deterministic: <code>set.seed(123)</code>, then <code>slice_sample(prop = 1)</code> on the pre-filtered frame, then the first 100 per country. Articles must also have a section (<code>SECTION != 6</code>, not missing), which leaves 485 articles (eligible per country: AU 121, CH 75, DE 117, LB 237, TR 62, US 63). The sample is drawn from the [DATA SET BLINDED FOR REVIEW].</td>
 						</tr>
 						<tr>
 							<td><b>Human coding procedure</b></td>
@@ -49,20 +64,48 @@ codebook (MedCon v7.7)             ─┘                                     �
 						</tr>
 						<tr>
 							<td><b>Coded units entering reliability</b></td>
-							<td>Article 485, actor 600 (ACT_PARTY_AFFILIATION: 442), justification 600, actor reference 557 (see <i>Reliability computation</i>)</td>
+							<td>Article 485, actor 600 (ACT_PARTY_AFFILIATION: 439), justification 600, actor reference 557 (see <i>Reliability computation</i>)</td>
 						</tr>
 					</tbody>
 					</table>
 
 					<h4>Prompts</h4>
 					<p>
-						All prompts are zero-shot. Each one gives the research context, quotes the relevant codebook instructions and ends with the full article text. One prompt is sent per coding unit. The prompt files cover the 17 variables analysed in the manuscript on four levels.
+						All 17 coding tasks use the same zero-shot prompting framework. One request is sent per coding unit, so every article, actor, justification and reference is classified independently. Each request combines five parts:
+					</p>
+					<ul>
+						<li>a role instruction</li>
+						<li>the research context</li>
+						<li>the coding task, naming the entity to code</li>
+						<li>the coding instructions quoted verbatim from the codebook (definitions, category lists, decision rules)</li>
+						<li>the full article text</li>
+					</ul>
+					<p>
+						The entity is inserted into the instruction and the article text is appended separately. The prompt therefore works like a fill-in-the-blank text: the model must find the named entity in the running text before assigning categories. A simplified example:
+					</p>
+<pre>You are a social science researcher coding news articles for the research
+project Mediated Contestation in Comparative Perspective. Your task is to
+classify actor {{actor}} mentioned in the article based on these strict
+instructions from the MedCon codebook (v7.7).
+
+Actor definition. An actor is an acting subject able to participate
+actively in a discourse and identifiable as such.
+
+1. ACT_ROLE_GENERAL. 1 Political: members of government, parliament,
+parties. … 14 Representatives of churches, religious or faith communities:
+clergymen/-women (Pope, imams, priests). … 19 Others. −99 Not specified.
+
+8. ACT_GENDER. 1 Female, 2 Male, 3 Other, −99 Not specified.
+
+Article text: {{article}}</pre>
+					<p>
+						In this example, <code>{{actor}}</code> = "Pope Francis" and <code>{{article}}</code> = the full article. One prompt file exists per coding level:
 					</p>
 					<table class="table table-condensed table-striped" style="width: auto;">
 					<thead>
 						<tr>
 							<th class="text-left">Prompt file</th>
-							<th class="text-left">Level in <code>icr_list1.rds</code></th>
+							<th class="text-left">Level in <code>icr_list_harmonized.rds</code></th>
 							<th class="text-left">Coding unit</th>
 							<th class="text-left">Variables coded</th>
 						</tr>
@@ -98,11 +141,11 @@ codebook (MedCon v7.7)             ─┘                                     �
 						<b>Prompt versions.</b> Two generations exist:
 					</p>
 					<ol>
-						<li><code>*_2026-04-02.txt</code>: the originals, as sent in the reported run. The actor prompt of this generation asks for all 9 actor variables in one request, of which only 5 are analysed; the other four (ACT_ROLE_POL_COUNTRY, ACT_ROLE_POL_LEVEL, ACT_ROLE_POL_DOMESTIC_NATIONAL, ACT_ROLE_POL_FOREIGN_NATIONAL) are coded but not analysed. The snapshots are byte-identical to the files used at the time.</li>
-						<li>Current <code>*.txt</code>: condensed versions for the SI Appendix. Same 9 actor sections but shortened wording; the religion list is trimmed (drops protestant sub-codes, Druze/Isma'ili, Hindu, Buddhist, "Other") and the conditional references in ACT_PARTY_AFFILIATION were removed.</li>
+						<li><code>*_2026-04-02.txt</code>: the original prompts, exactly as sent in the reported run (the snapshots are byte-identical to the files used at the time). The actor prompt of this generation asks for all 9 actor variables in one request. Only 5 are analysed. The other four (ACT_ROLE_POL_COUNTRY, ACT_ROLE_POL_LEVEL, ACT_ROLE_POL_DOMESTIC_NATIONAL, ACT_ROLE_POL_FOREIGN_NATIONAL) are coded but not analysed.</li>
+						<li>Current <code>*.txt</code>: condensed versions for the SI Appendix. They keep the same 9 actor sections in shorter wording. The religion list is trimmed (it drops the protestant sub-codes, Druze/Isma'ili, Hindu, Buddhist and "Other"), and the conditional references in ACT_PARTY_AFFILIATION are removed.</li>
 					</ol>
 					<p>
-						<b>Source of the placeholder values.</b> All placeholder values come from the human gold standard; the LLMs never identify units themselves (unit identification is not evaluated). Placeholders are filled in <code>prompt_generators.R</code>:
+						<b>Source of the placeholder values.</b> All placeholder values come from the human gold standard. The LLMs never identify units themselves, so unit identification is not evaluated. The placeholders are filled in <code>prompt_generators.R</code>:
 					</p>
 					<table class="table table-condensed table-striped" style="width: auto;">
 					<thead>
@@ -136,7 +179,16 @@ codebook (MedCon v7.7)             ─┘                                     �
 					</tbody>
 					</table>
 					<p>
-						<b>Structured output.</b> JSON schemas per prompt are defined in <code>schemas.R</code> using <code>ellmer</code> type specifications (<code>type_object</code> with <code>type_enum</code> for categorical variables, <code>type_integer</code> for TONE, <code>type_boolean</code> for the justification and reference indicators, <code>type_string</code> for open codes). Field names, types and allowed values are fixed there.
+						<b>Structured output.</b> Responses are constrained by a structured-output schema: a JSON schema that mirrors the codebook categories, so the models return category codes rather than free text. The schemas are defined in <code>schemas.R</code> with <code>ellmer</code> type specifications:
+					</p>
+					<ul>
+						<li><code>type_object</code> with <code>type_enum</code> for categorical variables</li>
+						<li><code>type_integer</code> for TONE</li>
+						<li><code>type_boolean</code> for the justification and reference indicators</li>
+						<li><code>type_string</code> for open codes</li>
+					</ul>
+					<p>
+						<code>ellmer</code> passes the schema to the provider API and returns the parsed fields directly.
 					</p>
 
 					<h4>Models and API settings</h4>
@@ -144,7 +196,7 @@ codebook (MedCon v7.7)             ─┘                                     �
 					<thead>
 						<tr>
 							<th class="text-left">Model (manuscript)</th>
-							<th class="text-left">Label in <code>icr_list1.rds</code></th>
+							<th class="text-left">Label in <code>icr_list_harmonized.rds</code></th>
 							<th class="text-left">Model identifier</th>
 							<th class="text-left">Provider / API endpoint</th>
 							<th class="text-left">Date(s) of requests</th>
@@ -159,7 +211,7 @@ codebook (MedCon v7.7)             ─┘                                     �
 							<td>February 2026</td>
 						</tr>
 						<tr>
-							<td>GPT 5 Nano</td>
+							<td>GPT-5 Nano</td>
 							<td><code>gpt_5_nano</code></td>
 							<td><code>openai/gpt-5.4-nano</code></td>
 							<td>OpenAI API (ellmer)</td>
@@ -170,7 +222,7 @@ codebook (MedCon v7.7)             ─┘                                     �
 							<td><code>qwen3</code></td>
 							<td><code>Qwen3 235B VL</code></td>
 							<td>[BLINDED FOR REVIEW] chat service (OpenAI-compatible)</td>
-							<td>Same run. This model has since been removed from the endpoint; any re-run would use a different model.</td>
+							<td>Same run. The model has since been removed from the endpoint, so a re-run would use a different model.</td>
 						</tr>
 					</tbody>
 					</table>
@@ -188,15 +240,15 @@ codebook (MedCon v7.7)             ─┘                                     �
 						</tr>
 						<tr>
 							<td><b>Temperature</b></td>
-							<td>0 for Gemini and Qwen (<code>params(temperature = 0)</code>). GPT-5.4-nano ran with <code>params(reasoning_effort = "low")</code> and no temperature (reasoning models do not accept a temperature).</td>
+							<td>Set to 0 wherever the model allows it (Gemini and Qwen: <code>params(temperature = 0)</code>), to make the output as deterministic as possible. GPT-5 Nano is a reasoning model that does not accept a temperature; it ran with <code>params(reasoning_effort = "low")</code>.</td>
 						</tr>
 						<tr>
 							<td><b>Other parameters</b></td>
-							<td>Batch size 20 (<code>BATCH_SIZE</code>); parallel requests with <code>max_active = 4</code> (Gemini, GPT) and <code>2</code> (Qwen); <code>on_error = "continue"</code> (failures return NA, no retries); responses memoised to a disk cache (<code>_memoise/</code>)</td>
+							<td>Batch size 20 (<code>BATCH_SIZE</code>). Parallel requests with <code>max_active = 4</code> for Gemini and GPT and <code>2</code> for Qwen. <code>on_error = "continue"</code>, so failures return NA without retries. Responses are memoised to a disk cache (<code>_memoise/</code>).</td>
 						</tr>
 						<tr>
 							<td><b>System vs. user prompt</b></td>
-							<td>Prompt text sent as the user message via ellmer structured extraction (<code>chat_structured</code> / <code>parallel_chat_structured</code>); no separate system prompt</td>
+							<td>The prompt text is sent as the user message via ellmer structured extraction (<code>chat_structured</code> / <code>parallel_chat_structured</code>). There is no separate system prompt.</td>
 						</tr>
 						<tr>
 							<td><b>Requests</b></td>
@@ -204,11 +256,11 @@ codebook (MedCon v7.7)             ─┘                                     �
 						</tr>
 						<tr>
 							<td><b>Failed or invalid responses</b></td>
-							<td>Not retried. Failed structured outputs produce <code>NA</code> codes, which are dropped unit-wise by <code>na.omit</code> in the reliability step. This explains Qwen's smaller unit counts (see <i>Reliability computation</i>). Gemini and GPT: essentially complete.</td>
+							<td>Not retried. A failed structured output gives <code>NA</code> codes, and those units are dropped by <code>na.omit</code> in the reliability step. This explains Qwen's smaller unit counts (see <i>Reliability computation</i>). Gemini's and GPT's outputs are essentially complete.</td>
 						</tr>
 						<tr>
 							<td><b>Costs</b></td>
-							<td>Not logged per request; Gemini and Qwen were free academic endpoints, GPT usage via the OpenAI API</td>
+							<td>Not logged per request. Gemini and Qwen ran on free academic endpoints; GPT was billed through the OpenAI API.</td>
 						</tr>
 					</tbody>
 					</table>
@@ -224,48 +276,67 @@ codebook (MedCon v7.7)             ─┘                                     �
 					<tbody>
 						<tr>
 							<td><b>Parsing</b></td>
-							<td><code>parallel_chat_structured()</code> returns parsed tibbles constrained by the schema; malformed or failed outputs yield <code>NA</code> (with an <code>.error</code> column retained in the raw CSVs)</td>
+							<td><code>parallel_chat_structured()</code> returns parsed tibbles constrained by the schema. Malformed or failed outputs yield <code>NA</code>; the raw CSVs keep an <code>.error</code> column.</td>
 						</tr>
 						<tr>
 							<td><b>Recoding</b></td>
-							<td><code>smart_parse()</code> in <code>compare_codings.R</code>: <code>TRUE</code> &rarr; 1, <code>FALSE</code> &rarr; 0; numeric strings parsed with <code>readr::parse_number()</code>; otherwise upper-cased and trimmed. Applied to LLM codes only; human codes kept as stored (everything coerced to character)</td>
+							<td><code>smart_parse()</code> maps <code>TRUE</code> &rarr; 1 and <code>FALSE</code> &rarr; 0, parses numeric strings with <code>readr::parse_number()</code>, and otherwise upper-cases and trims the value. It is applied to the LLM codes only. Human codes are kept as stored, and everything is coerced to character.</td>
 						</tr>
 						<tr>
-							<td><b>Open codes</b></td>
-							<td><code>ACT_PARTY_AFFILIATION</code> and <code>ACT_ORIGIN</code> are compared as upper-cased, trimmed strings without harmonisation</td>
+							<td><b>Party affiliation</b></td>
+							<td>Free-text party names are mapped onto the country-specific codebook codes (see <i>Harmonization of party affiliation</i>). Names that are not in the codebook are set to missing.</td>
+						</tr>
+						<tr>
+							<td><b>Other open codes</b></td>
+							<td><code>ACT_ORIGIN</code> is compared as an upper-cased, trimmed string without harmonization.</td>
 						</tr>
 						<tr>
 							<td><b>Conditional variables</b></td>
-							<td>Not filtered: ACT_PARTY_AFFILIATION is compared for all actors as coded; units where either side is missing are dropped by <code>na.omit</code></td>
+							<td>Not filtered. ACT_PARTY_AFFILIATION is compared for all actors as coded. Units where either side is missing, including unmatched party names, are dropped by <code>na.omit</code>.</td>
 						</tr>
 						<tr>
 							<td><b>Matching to the gold standard</b></td>
-							<td><code>unit_id</code> = concatenation of <code>Text_ID</code> and the unit index (<code>ACT_IDX</code>, <code>JUST_IDX</code>, <code>ACTREF_IDX</code>, <code>POSREF_IDX</code>, <code>JUSTREF_IDX</code>), created with <code>unite()</code> per level</td>
+							<td>Each level gets a <code>unit_id</code> that joins <code>Text_ID</code> and the unit index (<code>ACT_IDX</code>, <code>JUST_IDX</code>, <code>ACTREF_IDX</code>, <code>POSREF_IDX</code>, <code>JUSTREF_IDX</code>), created with <code>unite()</code>.</td>
 						</tr>
 					</tbody>
 					</table>
+
+					<h4>Harmonization of party affiliation</h4>
+					<p>
+						For codebook fields that allow open entries, the models often returned free text instead of the requested values. Human coders coded party affiliation with country-specific numeric codes (e.g. 1 = CDU/CSU in Germany, 6 = FDP in Germany, 12 = FDP.Die Liberalen in Switzerland). The party names returned by the LLMs were therefore mapped onto these codes. The country of the coded article resolves ambiguous abbreviations such as FDP. The mapping is defined in <code>harmonize_party()</code> (<code>preparation/party_harmonization.R</code>) and applies these rules in order:
+					</p>
+					<ol>
+						<li>Values starting with <code>-99</code> are kept as &minus;99 ("not specified"). Values containing "no party" become 45 ("no party affiliation").</li>
+						<li>A numeric code is kept if it exists in the codebook and belongs to the article's country, or is not country-specific.</li>
+						<li>Otherwise the name is normalized (transliterated to ASCII, lower-cased, punctuation and articles such as "party", "die", "the" removed). It is then matched against a list of aliases: party names, abbreviations and translations, including Arabic spellings for Lebanese parties. Aliases for the article's country are tried first.</li>
+						<li>A name that still does not match but contains "party", "partei" or "partisi" is coded as the country's "Other" category (GER 7, SUI 19, USA 22, AUS 27, LEB 39, TUR 44).</li>
+						<li>All remaining values stay missing, so they count as neither agreement nor disagreement.</li>
+					</ol>
+					<p>
+						Only ACT_PARTY_AFFILIATION is affected. Compared with the un-harmonized codes, the majority-vote alpha rises from .278 to .643 and the percentage agreement from 69.2% to 85.2%. The per-model alphas rise as follows: Gemini .236 &rarr; .608, GPT .178 &rarr; .465, Qwen .290 &rarr; .441. All other variables are unchanged.
+					</p>
 
 					<h4>Majority vote</h4>
 					<table class="table table-condensed table-striped" style="width: auto;">
 					<tbody>
 						<tr>
 							<td><b>Rule</b></td>
-							<td>Modal code (<code>get_mode()</code>) across the three models, computed per variable and unit</td>
+							<td>Modal code across the three models, computed per variable and unit</td>
 						</tr>
 						<tr>
 							<td><b>Ties</b></td>
-							<td>Resolved by first occurrence in model order (<code>which.max(tabulate(...))</code>): Gemini &rarr; GPT &rarr; Qwen</td>
+							<td>Resolved by first occurrence in model order (<code>which.max(tabulate(...))</code>), i.e. alphabetically: Gemini &rarr; GPT &rarr; Qwen</td>
 						</tr>
 						<tr>
 							<td><b>Missing model output</b></td>
-							<td>The majority is formed from the remaining models; consensus unit counts match the Gemini/GPT coverage even where Qwen failed</td>
+							<td>Missing codes are ignored and the majority is formed from the remaining models. As a result, the majority-vote unit counts match Gemini's and GPT's coverage even where Qwen failed.</td>
 						</tr>
 					</tbody>
 					</table>
 
 					<h4>Reliability computation</h4>
 					<p>
-						Reliability was computed with <code>tidycomm::test_icr()</code> (tidycomm 0.4.2). Parameters stored in <code>icr_list1.rds</code>:
+						Reliability was computed with <code>tidycomm::test_icr()</code> (tidycomm 0.4.2) with the following parameters:
 					</p>
 					<table class="table table-condensed table-striped" style="width: auto;">
 					<tbody>
@@ -274,25 +345,29 @@ codebook (MedCon v7.7)             ─┘                                     �
 							<td><code>unit_id</code> / <code>coder</code></td>
 						</tr>
 						<tr>
+							<td><b>Comparisons</b></td>
+							<td>Four per coding task: each model against the human gold standard, and the majority vote of the three models against it</td>
+						</tr>
+						<tr>
 							<td><b>Coefficients</b></td>
 							<td>Percentage agreement (<code>Agreement</code>), Krippendorff's alpha (<code>Krippendorffs_Alpha</code>)</td>
 						</tr>
 						<tr>
 							<td><b>Level of measurement</b></td>
-							<td><code>TONE</code> ordinal (<code>levels = c(TONE = "ordinal")</code>); all other variables nominal, on every level</td>
+							<td>TONE is the only ordinal variable (<code>levels = c(TONE = "ordinal")</code>); all other variables are nominal on every level.</td>
 						</tr>
 						<tr>
 							<td><b>Missing values</b></td>
-							<td><code>na.omit = TRUE</code>: units with a missing code from either coder are dropped</td>
+							<td><code>na.omit = TRUE</code>: a unit enters a task only if both coders have a non-missing code. Articles that failed to code therefore count as missing, not as errors.</td>
 						</tr>
 						<tr>
 							<td><b>&minus;99 handling</b></td>
-							<td>&minus;99 ("not specified") is treated as a valid nominal category, not as missing. Only actual <code>NA</code> codes are dropped</td>
+							<td>&minus;99 ("not specified") is a valid nominal category, not a missing value. Only actual <code>NA</code> codes are dropped.</td>
 						</tr>
 					</tbody>
 					</table>
 					<p>
-						Units entering the reliability computation per comparison (<code>n_Units</code> in <code>icr_list1.rds</code>):
+						Units entering the reliability computation per comparison (<code>n_Units</code> in <code>icr_list_harmonized.rds</code>):
 					</p>
 					<table class="table table-condensed table-striped" style="width: auto;">
 					<thead>
@@ -314,10 +389,10 @@ codebook (MedCon v7.7)             ─┘                                     �
 						</tr>
 						<tr>
 							<td>Actor (ACT_PARTY_AFFILIATION)</td>
-							<td class="text-center">600 (442)</td>
-							<td class="text-center">600 (442)</td>
-							<td class="text-center">527 (395)</td>
-							<td class="text-center">600 (442)</td>
+							<td class="text-center">600 (428)</td>
+							<td class="text-center">600 (427)</td>
+							<td class="text-center">527 (381)</td>
+							<td class="text-center">600 (439)</td>
 						</tr>
 						<tr>
 							<td>Justification</td>
@@ -336,12 +411,12 @@ codebook (MedCon v7.7)             ─┘                                     �
 					</tbody>
 					</table>
 					<p>
-						<i>Note</i>: Sampling is per level: up to 100 units per country. Only 485 articles satisfy the article-level filter (<code>SECTION != 6</code>); the actor and justification levels have 600 units. Qwen's lower counts stem from failed structured outputs, dropped unit-wise by <code>na.omit</code>, not from a different sample.
+						<i>Note</i>: Sampling is per level, up to 100 units per country. Only 485 articles pass the article-level filter (<code>SECTION != 6</code>); the actor and justification levels have 600 units each. Qwen's lower counts come from failed structured outputs, which are dropped unit-wise by <code>na.omit</code>, not from a different sample. For ACT_PARTY_AFFILIATION, units are also dropped when the human code is missing or the LLM's party name could not be matched to a codebook code.
 					</p>
 
-					<h4>Structure of <code>icr_list1.rds</code></h4>
+					<h4>Structure of <code>icr_list_harmonized.rds</code></h4>
 					<p>
-						A named list of five data frames, one row per variable (23 variables on 6 levels). The analysis uses only <code>res_consensus</code> and <code>res_indiv</code>; the levels <code>JUST_REF</code> and <code>POS_REF</code> are not analysed.
+						A named list of five data frames, one row per variable (23 variables on 6 levels). The analysis uses only <code>res_consensus</code> and <code>res_indiv</code>; the levels <code>JUST_REF</code> and <code>POS_REF</code> are not analysed. <code>icr_list_harmonized.rds</code> replaces the earlier <code>icr_list1.rds</code>, which contained un-harmonized party codes. Apart from ACT_PARTY_AFFILIATION, the two files are identical.
 					</p>
 					<table class="table table-condensed table-striped" style="width: auto;">
 					<thead>
@@ -392,6 +467,52 @@ codebook (MedCon v7.7)             ─┘                                     �
 					</tbody>
 					</table>
 
+					<h4>Replication of the reliability step</h4>
+					<p>
+						A self-contained replication package re-computes the two elements used in the analysis (<code>res_indiv</code>, <code>res_consensus</code>). It takes the harmonized zero-shot codings and the human gold standard as input. Its output is identical to <code>icr_list_harmonized.rds</code> on all 92 cells (agreement, alpha and number of units). Run it with <code>Rscript compute_reliability.R</code> (about 15 seconds; requires the tidyverse and <code>tidycomm</code>). All files are read and written inside the folder.
+					</p>
+					<table class="table table-condensed table-striped" style="width: auto;">
+					<thead>
+						<tr>
+							<th class="text-left">File</th>
+							<th class="text-left">Content</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td><code>compute_reliability.R</code></td>
+							<td>Majority vote and reliability computation (agreement and Krippendorff's alpha per coding task and comparison)</td>
+						</tr>
+						<tr>
+							<td><code>data/&lt;level&gt;_human.tsv</code></td>
+							<td>Human gold standard: unit identifiers and coded categories</td>
+						</tr>
+						<tr>
+							<td><code>data/&lt;level&gt;_zero_shot.tsv</code></td>
+							<td>Harmonized LLM codings (3 models &times; sampled units), same columns plus <code>model</code> and <code>COUNTRY</code>. Value formats are normalized to codebook codes, and party names are mapped onto the party codes.</td>
+						</tr>
+						<tr>
+							<td><code>preparation/make_input_files.R</code></td>
+							<td>Optional: regenerates the input files from the raw LLM responses and the human gold standard (applies <code>smart_parse()</code> and the party harmonization)</td>
+						</tr>
+						<tr>
+							<td><code>preparation/party_harmonization.R</code></td>
+							<td>Party codebook, alias list, <code>harmonize_party()</code> and <code>smart_parse()</code></td>
+						</tr>
+						<tr>
+							<td><code>reliability.tsv</code></td>
+							<td>One row per coding task and comparison (92 rows): level, variable, scale, comparison, model, percentage agreement, Krippendorff's alpha, number of units, number of coders</td>
+						</tr>
+						<tr>
+							<td><code>reliability.rds</code></td>
+							<td><code>list(res_indiv, res_consensus)</code> in the column layout of <code>icr_list_harmonized.rds</code>; the analysis scripts can read it in place of that file</td>
+						</tr>
+					</tbody>
+					</table>
+					<p>
+						Levels: <code>article</code>, <code>actor</code>, <code>justification</code>, <code>actref</code>, <code>posref</code>, <code>justref</code>. All values are stored as text, and codes follow the codebook (&minus;99 = not specified).
+					</p>
+
 					<h4>Code and raw outputs</h4>
 					<table class="table table-condensed table-striped" style="width: auto;">
 					<thead>
@@ -410,24 +531,27 @@ codebook (MedCon v7.7)             ─┘                                     �
 							<td><code>results/*_results.csv</code></td>
 						</tr>
 						<tr>
-							<td>Script that computes the majority vote and <code>icr_list1.rds</code></td>
-							<td><code>compare_codings.R</code> &rarr; <code>results/icr_list1.rds</code></td>
+							<td>Party harmonization</td>
+							<td><code>preparation/party_harmonization.R</code>, applied in <code>preparation/make_input_files.R</code></td>
 						</tr>
 						<tr>
-							<td>Script that analyses <code>icr_list1.rds</code> and produces all results, tables and figures in the manuscript and the SI Appendix</td>
+							<td>Script that computes the majority vote and the reliability coefficients</td>
+							<td><code>compute_reliability.R</code> &rarr; <code>reliability.rds</code> / <code>reliability.tsv</code> (identical to <code>icr_list_harmonized.rds</code>)</td>
+						</tr>
+						<tr>
+							<td>Script that analyses <code>icr_list_harmonized.rds</code> and produces all results, tables and figures in the manuscript and the SI Appendix</td>
 							<td><code>00_MASTER_analysis.R</code> (see section <a href="../reproduction-materials" data-role="internal">Reproduction Materials</a>)</td>
 						</tr>
 					</tbody>
 					</table>
 
 					<h4>Material</h4>
+					<ul>
+						<li><a href="../../files/LLM Annotation Coding Materials.zip" download="" target="_blank">LLM Coding Materials: Prompts, Scripts &amp; Raw Responses [ZIP]</a> [TO FILL: final file name]</li>
+						<li><a href="../../files/Zero Shot Reliability Repro Materials - R.zip" download="" target="_blank">Zero-Shot Reliability Replication Materials [ZIP]</a> [TO FILL: final file name]</li>
+					</ul>
 					<p>
-						<ul>
-							<li><a href="../../files/LLM Annotation Coding Materials.zip" download="" target="_blank">LLM Coding Materials Prompts, Scripts &amp; Raw Responses [ZIP]</a> [TO FILL: final file name]</li>
-						</ul>
-					</p>
-					<p>
-						Contents of the ZIP file [TO FILL: check against the final ZIP]:
+						Contents of the LLM Coding Materials ZIP file [TO FILL: check against the final ZIP]:
 					</p>
 					<table class="table table-condensed table-striped" style="width: auto;">
 					<thead>
@@ -450,10 +574,6 @@ codebook (MedCon v7.7)             ─┘                                     �
 							<td>Loading the data, building the prompts, structured-output schemas, API calls</td>
 						</tr>
 						<tr>
-							<td><code>compare_codings.R</code></td>
-							<td>Recoding, majority vote and reliability computation; writes <code>icr_list1.rds</code></td>
-						</tr>
-						<tr>
 							<td><code>results/*_results.csv</code></td>
 							<td>Raw LLM responses per model and level</td>
 						</tr>
@@ -468,7 +588,7 @@ codebook (MedCon v7.7)             ─┘                                     �
 		</div>
 
 		<div id="footer"></div>
-		
+
 		<script type="text/javascript">window.linkLevel = 3; window.sectionID = 'documentation';</script>
 		<script type="text/javascript" src="../../common/common.js"></script>
 		<script type="text/javascript" src='../../subnav.js'></script>
